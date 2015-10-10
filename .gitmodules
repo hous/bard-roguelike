@@ -1,0 +1,3 @@
+[submodule "libtcod-mac"]
+	path = libtcod-mac
+	url = https://github.com/podiki/libtcod-mac.git
