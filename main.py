@@ -1,15 +1,13 @@
 #!/usr/bin/python
 import sys, os
 
-sys.path.append(os.path.abspath("./libtcod-mac/python"))
+sys.path.append(os.path.abspath("./lib"))
 sys.path.append(os.path.abspath("./classes"))
 
 import libtcodpy as libtcod
+import Constants as C
 import Object as O
-
-#actual size of the window
-SCREEN_WIDTH = 80
-SCREEN_HEIGHT = 50
+import Map as M
 
 def handle_keys():
     global player_x, player_y
@@ -36,26 +34,34 @@ def handle_keys():
     elif libtcod.console_is_key_pressed(libtcod.KEY_RIGHT):
         player.move(1, 0)
 
+def render_all():
 
-#############################################
-# Initialization & Main Loop
-#############################################
-
-libtcod.console_set_custom_font('libtcod-mac/data/fonts/arial10x10.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
-libtcod.console_init_root(SCREEN_WIDTH, SCREEN_HEIGHT, 'python/libtcod tutorial', False)
-con = libtcod.console_new(SCREEN_WIDTH, SCREEN_HEIGHT)
-
-player = O.Object(con, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, '@', libtcod.white)
-npc = O.Object(con, SCREEN_WIDTH/2 - 5, SCREEN_HEIGHT/2, '@', libtcod.yellow)
-objects = [npc, player]
-
-while not libtcod.console_is_window_closed():
+    m = M.Map(con, 80, 45)
+    m.draw()
 
     #draw all objects in the list
     for object in objects:
         object.draw()
 
-    libtcod.console_blit(con, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0)
+    #blit the contents of "con" to the root console
+    libtcod.console_blit(con, 0, 0, C.SCREEN_WIDTH, C.SCREEN_HEIGHT, 0, 0, 0)
+
+#############################################
+# Initialization & Main Loop
+#############################################
+
+libtcod.console_set_custom_font('assets/fonts/arial10x10.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
+libtcod.console_init_root(C.SCREEN_WIDTH, C.SCREEN_HEIGHT, 'python/libtcod tutorial', False)
+con = libtcod.console_new(C.SCREEN_WIDTH, C.SCREEN_HEIGHT)
+
+player = O.Object(con, C.SCREEN_WIDTH/2, C.SCREEN_HEIGHT/2, '@', libtcod.white)
+npc = O.Object(con, C.SCREEN_WIDTH/2 - 5, C.SCREEN_HEIGHT/2, '@', libtcod.yellow)
+objects = [npc, player]
+
+while not libtcod.console_is_window_closed():
+
+    render_all()
+
     libtcod.console_flush()
 
     #erase all objects at their old locations, before they move
