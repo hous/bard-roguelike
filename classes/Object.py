@@ -3,7 +3,8 @@ import libtcodpy as libtcod
 class Object:
     #this is a generic object: the player, a monster, an item, the stairs...
     #it's always represented by a character on screen.
-    def __init__(self, x, y, char, color):
+    def __init__(self, console, x, y, char, color):
+        self.console = console
         self.x = x
         self.y = y
         self.char = char
@@ -16,9 +17,9 @@ class Object:
 
     def draw(self):
         #set the color and then draw the character that represents this object at its position
-        libtcod.console_set_default_foreground(con, self.color)
-        libtcod.console_put_char(con, self.x, self.y, self.char, libtcod.BKGND_NONE)
+        libtcod.console_set_default_foreground(self.console, self.color)
+        libtcod.console_put_char(self.console, self.x, self.y, self.char, libtcod.BKGND_NONE)
 
     def clear(self):
         #erase the character that represents this object
-        libtcod.console_put_char(con, self.x, self.y, ' ', libtcod.BKGND_NONE)
+        libtcod.console_put_char(self.console, self.x, self.y, ' ', libtcod.BKGND_NONE)

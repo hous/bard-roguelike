@@ -4,7 +4,6 @@ import sys, os
 sys.path.append(os.path.abspath("./libtcod-mac/python"))
 sys.path.append(os.path.abspath("./classes"))
 
-
 import libtcodpy as libtcod
 import Object as O
 
@@ -46,8 +45,8 @@ libtcod.console_set_custom_font('libtcod-mac/data/fonts/arial10x10.png', libtcod
 libtcod.console_init_root(SCREEN_WIDTH, SCREEN_HEIGHT, 'python/libtcod tutorial', False)
 con = libtcod.console_new(SCREEN_WIDTH, SCREEN_HEIGHT)
 
-player = O.Object(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, '@', libtcod.white)
-npc = O.Object(SCREEN_WIDTH/2 - 5, SCREEN_HEIGHT/2, '@', libtcod.yellow)
+player = O.Object(con, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, '@', libtcod.white)
+npc = O.Object(con, SCREEN_WIDTH/2 - 5, SCREEN_HEIGHT/2, '@', libtcod.yellow)
 objects = [npc, player]
 
 while not libtcod.console_is_window_closed():
