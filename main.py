@@ -10,16 +10,15 @@ import Object as O
 import Map as M
 
 def handle_keys():
-    global player_x, player_y
-
     key = libtcod.console_wait_for_keypress(True)
 
+    #Alt+Enter: toggle fullscreen
     if key.vk == libtcod.KEY_ENTER and key.lalt:
-        #Alt+Enter: toggle fullscreen
         libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
 
+    #Escape to exit game
     elif key.vk == libtcod.KEY_ESCAPE:
-        return True  #exit game
+        return True
 
     #movement keys
     if libtcod.console_is_key_pressed(libtcod.KEY_UP):
@@ -35,8 +34,6 @@ def handle_keys():
         player.move(1, 0)
 
 def render_all():
-
-    m = M.Map(con, 80, 45)
     m.draw()
 
     #draw all objects in the list
@@ -50,12 +47,16 @@ def render_all():
 # Initialization & Main Loop
 #############################################
 
-libtcod.console_set_custom_font('assets/fonts/arial10x10.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
+libtcod.console_set_custom_font('assets/fonts/font.png', libtcod.FONT_LAYOUT_ASCII_INROW | libtcod.FONT_TYPE_GREYSCALE, 32, 2048)
 libtcod.console_init_root(C.SCREEN_WIDTH, C.SCREEN_HEIGHT, 'python/libtcod tutorial', False)
 con = libtcod.console_new(C.SCREEN_WIDTH, C.SCREEN_HEIGHT)
 
-player = O.Object(con, C.SCREEN_WIDTH/2, C.SCREEN_HEIGHT/2, '@', libtcod.white)
-npc = O.Object(con, C.SCREEN_WIDTH/2 - 5, C.SCREEN_HEIGHT/2, '@', libtcod.yellow)
+m = M.Map(con, 80, 45)
+m.create_test_map()
+player_x, player_y = m.get_starting_coords()
+
+player = O.Object(con, player_x, player_y, 1217, libtcod.white)
+npc = O.Object(con, C.SCREEN_WIDTH/2 - 5, C.SCREEN_HEIGHT/2, 1218, libtcod.yellow)
 objects = [npc, player]
 
 while not libtcod.console_is_window_closed():

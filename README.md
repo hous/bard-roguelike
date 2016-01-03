@@ -1,5 +1,10 @@
-
 OSX libtcod setup: https://github.com/podiki/libtcod-mac
-Tutorial: http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python
 
-@step2 in the tutorial, need to split things up in classes and not include libraries.
+@step3 in the tutorial
+Tutorial: http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod,_part_3
+
+TODO
+- [ ] Get a better square font that has only necessary characters
+- [ ] Clean up the map garbage
+- [ ] 
+
