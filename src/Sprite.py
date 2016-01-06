@@ -1,7 +1,7 @@
 import libtcodpy as libtcod
 
-class Object:
-    #this is a generic object: the player, a monster, an item, the stairs...
+class Sprite:
+    #this is a generic game object: the player, a monster, an item, the stairs...
     #it's always represented by a character on screen.
     def __init__(self, console, x, y, char, color):
         self.console = console

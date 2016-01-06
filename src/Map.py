@@ -1,13 +1,17 @@
 import libtcodpy as libtcod
 import Constants as C
 from Rect import Rect
+import Game
 
 class Tile:
-    #a tile of the map and its properties
+    # A tile of the map and its properties
     def __init__(self, blocked, block_sight = None):
         self.blocked = blocked
 
-        #by default, if a tile is blocked, it also blocks sight
+        # All tiles are unexplored by default
+        self.explored = False
+
+        # By default, if a tile is blocked, it also blocks sight. May need to change for glass / ice?
         if block_sight is None: block_sight = blocked
         self.block_sight = block_sight
 
@@ -22,6 +26,10 @@ class Map(object):
             for y in range(self.height) ]
                 for x in range(self.width) ]
 
+        self.generate_map()
+        self.generate_fov_map()
+
+    def generate_map(self):
         rooms = []
         num_rooms = 0
 
@@ -78,22 +86,39 @@ class Map(object):
                 rooms.append(new_room)
                 num_rooms += 1
 
-
-        # Testing
-        self.map[30][22].blocked = True
-        self.map[30][22].block_sight = True
-        self.map[50][22].blocked = True
-        self.map[50][22].block_sight = True
-
-    def draw(self):
-        #go through all tiles, and set their background color
+    def generate_fov_map(self):
+        self.fov_map = libtcod.map_new(self.width, self.height)
         for y in range(self.height):
             for x in range(self.width):
+                libtcod.map_set_properties(self.fov_map, x, y, not self.map[x][y].block_sight, not self.map[x][y].blocked)
+
+    def draw(self):
+        if Game.fov_recompute:
+            #recompute FOV if needed (the player moved or something)
+            Game.fov_recompute = False
+            libtcod.map_compute_fov(fov_map, player.x, player.y, TORCH_RADIUS, FOV_LIGHT_WALLS, FOV_ALGO)
+
+        #go through all tiles, and set their background color according to the FOV
+        for y in range(self.height):
+            for x in range(self.width):
+                visible = libtcod.map_is_in_fov(self.fov_map, x, y)
                 wall = self.map[x][y].block_sight
-                if wall:
-                    libtcod.console_put_char_ex(self.console, x, y, 2242, C.COLOR_DARK_WALL, C.COLOR_BACKGROUND_TEST)
+                if not visible:
+                    #if it's not visible right now, the player can only see it if it's explored
+                    if self.map[x][y].explored:
+                        if wall:
+                            libtcod.console_put_char_ex(self.console, x, y, 2242, C.COLOR_DARK_WALL, C.COLOR_BACKGROUND)
+                        else:
+                            libtcod.console_put_char_ex(self.console, x, y, 2242, C.COLOR_DARK_GROUND, C.COLOR_BACKGROUND)
                 else:
-                    libtcod.console_put_char_ex(self.console, x, y, 2242, C.COLOR_DARK_GROUND, C.COLOR_BACKGROUND)
+                    #it's visible
+                    if wall:
+                        libtcod.console_put_char_ex(self.console, x, y, 2242, C.COLOR_LIGHT_WALL, C.COLOR_BACKGROUND)
+                    else:
+                        libtcod.console_put_char_ex(self.console, x, y, 2242, C.COLOR_LIGHT_GROUND, C.COLOR_BACKGROUND)
+
+                    #since it's visible, explore it
+                    self.map[x][y].explored = True
 
     def get_starting_coords(self):
         return [ self.starting_coords['x'], self.starting_coords['y'] ]
