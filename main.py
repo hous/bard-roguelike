@@ -2,7 +2,7 @@
 import sys, os
 
 sys.path.append(os.path.abspath("./lib"))
-sys.path.append(os.path.abspath("./classes"))
+sys.path.append(os.path.abspath("./src"))
 
 import libtcodpy as libtcod
 import Constants as C
