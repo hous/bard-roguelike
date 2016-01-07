@@ -1,7 +1,8 @@
 import libtcodpy as libtcod
-import Constants as C
-from Rect import Rect
-import Game
+import constants as C
+from shapes import Rect
+from sprite import Sprite
+import game
 
 class Tile:
     # A tile of the map and its properties
@@ -29,6 +30,11 @@ class Map(object):
         self.generate_map()
         self.generate_fov_map()
 
+    def register_protagonist(self, sprite):
+        # Get a reference to the sprite that will be determining field-of-view
+        self.protagonist = sprite
+
+    # Very basic ATM. Should be able to take randomization parameters about different room frequency, sizes, shapes, etc.
     def generate_map(self):
         rooms = []
         num_rooms = 0
@@ -53,18 +59,21 @@ class Map(object):
 
             if not failed:
                 #this means there are no intersections, so this room is valid
-
-                print(new_room)
                 #"paint" it to the map's tiles
                 self.create_room(new_room)
 
                 #center coordinates of new room, will be useful later
                 (new_x, new_y) = new_room.center()
 
+                if C.DEBUG:
+                    room_no = Sprite(game.console, new_x, new_y, chr(65+num_rooms), libtcod.white)
+                    game.sprites.insert(0, room_no) #draw early, so monsters are drawn on top
+
                 if num_rooms == 0:
                     #this is the first room, where the player starts at
                     self.starting_coords['x'] = new_x
                     self.starting_coords['y'] = new_y
+                    print new_room.area()
                 else:
                     #all rooms after the first:
                     #connect it to the previous room with a tunnel
@@ -93,10 +102,11 @@ class Map(object):
                 libtcod.map_set_properties(self.fov_map, x, y, not self.map[x][y].block_sight, not self.map[x][y].blocked)
 
     def draw(self):
-        if Game.fov_recompute:
+        if game.fov_recompute:
             #recompute FOV if needed (the player moved or something)
-            Game.fov_recompute = False
-            libtcod.map_compute_fov(fov_map, player.x, player.y, TORCH_RADIUS, FOV_LIGHT_WALLS, FOV_ALGO)
+            game.fov_recompute = False
+            # yuck, shouldn't need to reference
+            libtcod.map_compute_fov(self.fov_map, self.protagonist.x, self.protagonist.y, C.TORCH_RADIUS, C.FOV_LIGHT_WALLS, C.FOV_ALGORITHM)
 
         #go through all tiles, and set their background color according to the FOV
         for y in range(self.height):
@@ -107,15 +117,19 @@ class Map(object):
                     #if it's not visible right now, the player can only see it if it's explored
                     if self.map[x][y].explored:
                         if wall:
-                            libtcod.console_put_char_ex(self.console, x, y, 2242, C.COLOR_DARK_WALL, C.COLOR_BACKGROUND)
+                            libtcod.console_set_char_background(self.console, x, y, C.COLOR_DARK_WALL, libtcod.BKGND_SET)
+                            #libtcod.console_put_char_ex(self.console, x, y, 2242, C.COLOR_DARK_WALL, C.COLOR_BACKGROUND)
                         else:
-                            libtcod.console_put_char_ex(self.console, x, y, 2242, C.COLOR_DARK_GROUND, C.COLOR_BACKGROUND)
+                            libtcod.console_set_char_background(self.console, x, y, C.COLOR_DARK_GROUND, libtcod.BKGND_SET)
+                            #libtcod.console_put_char_ex(self.console, x, y, 2242, C.COLOR_DARK_GROUND, C.COLOR_BACKGROUND)
                 else:
                     #it's visible
                     if wall:
-                        libtcod.console_put_char_ex(self.console, x, y, 2242, C.COLOR_LIGHT_WALL, C.COLOR_BACKGROUND)
+                        libtcod.console_set_char_background(self.console, x, y, C.COLOR_LIGHT_WALL, libtcod.BKGND_SET)
+                        #libtcod.console_put_char_ex(self.console, x, y, 2242, C.COLOR_LIGHT_WALL, C.COLOR_BACKGROUND)
                     else:
-                        libtcod.console_put_char_ex(self.console, x, y, 2242, C.COLOR_LIGHT_GROUND, C.COLOR_BACKGROUND)
+                        libtcod.console_set_char_background(self.console, x, y, C.COLOR_LIGHT_GROUND, libtcod.BKGND_SET)
+                        #libtcod.console_put_char_ex(self.console, x, y, 2242, C.COLOR_LIGHT_GROUND, C.COLOR_BACKGROUND)
 
                     #since it's visible, explore it
                     self.map[x][y].explored = True

@@ -5,43 +5,47 @@ sys.path.append(os.path.abspath("./lib"))
 sys.path.append(os.path.abspath("./src"))
 
 import libtcodpy as libtcod
-import Constants as C
-import Game
-from Sprite import Sprite
-from Map import Map
+import constants as C
+import game
+from sprite import Sprite
+from map import Map
 
 #############################################
 # libtcod Initialization & Main Loop
 #############################################
 
 def init():
-    libtcod.console_set_custom_font('assets/fonts/font.png', libtcod.FONT_LAYOUT_ASCII_INROW | libtcod.FONT_TYPE_GREYSCALE, 32, 2048)
+    #libtcod.console_set_custom_font('assets/fonts/font.png', libtcod.FONT_LAYOUT_ASCII_INROW | libtcod.FONT_TYPE_GREYSCALE, 32, 2048)
+    libtcod.console_set_custom_font('assets/fonts/arial10x10.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
     libtcod.console_init_root(C.SCREEN_WIDTH, C.SCREEN_HEIGHT, 'python/libtcod tutorial', False)
-    con = libtcod.console_new(C.SCREEN_WIDTH, C.SCREEN_HEIGHT)
+    game.register_console(libtcod.console_new(C.SCREEN_WIDTH, C.SCREEN_HEIGHT))
 
-    m = Map(con, 80, 45)
-    m.create_test_map()
+    m = Map(game.console, 80, 45)
+
     player_x, player_y = m.get_starting_coords()
 
-    player = Sprite(con, player_x, player_y, 1217, libtcod.white)
-    npc = Sprite(con, C.SCREEN_WIDTH/2 - 5, C.SCREEN_HEIGHT/2, 1218, libtcod.yellow)
-    objects = [npc, player]
+    # Ready Player One
+    game.register_sprite(Sprite(game.console, player_x, player_y, '@', libtcod.white), True)
+    m.register_protagonist(game.player_one)
+
+    # Test Mob
+    game.register_sprite(Sprite(game.console, player_x + 3, player_y, 'g', libtcod.white))
 
     while not libtcod.console_is_window_closed():
         m.draw()
 
         #draw all objects in the list
-        for object in objects:
-            object.draw()
+        for sprite in game.sprites:
+            sprite.draw()
 
         #blit the contents of "con" to the root console
-        libtcod.console_blit(con, 0, 0, C.SCREEN_WIDTH, C.SCREEN_HEIGHT, 0, 0, 0)
+        libtcod.console_blit(game.console, 0, 0, C.SCREEN_WIDTH, C.SCREEN_HEIGHT, 0, 0, 0)
 
         libtcod.console_flush()
 
         #erase all objects at their old locations, before they move
-        for object in objects:
-            object.clear()
+        for sprite in game.sprites:
+            sprite.clear()
 
         #handle keys and exit game if needed
         exit = handle_keys()
@@ -53,7 +57,7 @@ def init():
 #############################################
 
 def handle_keys():
-    Game.fov_recompute = False
+    game.fov_recompute = False
 
     key = libtcod.console_wait_for_keypress(True)
 
@@ -67,19 +71,19 @@ def handle_keys():
 
     #movement keys
     if libtcod.console_is_key_pressed(libtcod.KEY_UP):
-        player.move(0, -1)
-        Game.fov_recompute = True
+        game.player_one.move(0, -1)
+        game.fov_recompute = True
 
     elif libtcod.console_is_key_pressed(libtcod.KEY_DOWN):
-        player.move(0, 1)
-        Game.fov_recompute = True
+        game.player_one.move(0, 1)
+        game.fov_recompute = True
 
     elif libtcod.console_is_key_pressed(libtcod.KEY_LEFT):
-        player.move(-1, 0)
-        Game.fov_recompute = True
+        game.player_one.move(-1, 0)
+        game.fov_recompute = True
 
     elif libtcod.console_is_key_pressed(libtcod.KEY_RIGHT):
-        player.move(1, 0)
-        Game.fov_recompute = True
+        game.player_one.move(1, 0)
+        game.fov_recompute = True
 
 init()
