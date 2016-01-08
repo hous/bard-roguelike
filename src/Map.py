@@ -1,6 +1,6 @@
 import libtcodpy as libtcod
 import constants as C
-from shapes import Rect
+from shapes import Rect, Circle
 from sprite import Sprite
 import game
 
@@ -26,7 +26,7 @@ class Map(object):
         self.map = [[ Tile(True)
             for y in range(self.height) ]
                 for x in range(self.width) ]
-
+        print self.map
         self.generate_map()
         self.generate_fov_map()
 
@@ -39,16 +39,19 @@ class Map(object):
         rooms = []
         num_rooms = 0
 
-        for r in range(C.DUNGEON_MAX_ROOMS):
-            #random width and height
-            w = libtcod.random_get_int(0, C.DUNGEON_ROOM_MIN_SIZE, C.DUNGEON_ROOM_MAX_SIZE)
-            h = libtcod.random_get_int(0, C.DUNGEON_ROOM_MIN_SIZE, C.DUNGEON_ROOM_MAX_SIZE)
-            #random position without going out of the boundaries of the map
-            x = libtcod.random_get_int(0, 0, self.width - w - 1)
-            y = libtcod.random_get_int(0, 0, self.height - h - 1)
-
-            #"Rect" class makes rectangles easier to work with
-            new_room = Rect(x, y, w, h)
+        for count in range(C.DUNGEON_MAX_ROOMS):
+            # 1/5 of rooms as circles
+            if libtcod.random_get_int(0, 0, 5) == 4:
+                r = libtcod.random_get_int(0, C.DUNGEON_ROOM_MIN_SIZE / 2, C.DUNGEON_ROOM_MAX_SIZE / 2)
+                x = libtcod.random_get_int(0, r, self.width - r - 2)
+                y = libtcod.random_get_int(0, r, self.height - r - 2)
+                new_room = Circle(x, y, r)
+            else:
+                w = libtcod.random_get_int(0, C.DUNGEON_ROOM_MIN_SIZE, C.DUNGEON_ROOM_MAX_SIZE)
+                h = libtcod.random_get_int(0, C.DUNGEON_ROOM_MIN_SIZE, C.DUNGEON_ROOM_MAX_SIZE)
+                x = libtcod.random_get_int(0, 1, self.width - w - 2)
+                y = libtcod.random_get_int(0, 1, self.height - h - 2)
+                new_room = Rect(x, y, w, h)
 
             #run through the other rooms and see if they intersect with this one
             failed = False
@@ -111,7 +114,7 @@ class Map(object):
         #go through all tiles, and set their background color according to the FOV
         for y in range(self.height):
             for x in range(self.width):
-                visible = libtcod.map_is_in_fov(self.fov_map, x, y)
+                visible = libtcod.map_is_in_fov(self.fov_map, x, y) if not C.DEBUG else True
                 wall = self.map[x][y].block_sight
                 if not visible:
                     #if it's not visible right now, the player can only see it if it's explored
@@ -138,11 +141,10 @@ class Map(object):
         return [ self.starting_coords['x'], self.starting_coords['y'] ]
 
     def create_room(self, room):
-        #go through the tiles in the rectangle and make them passable
-        for x in range(room.x1 + 1, room.x2):
-            for y in range(room.y1 + 1, room.y2):
-                self.map[x][y].blocked = False
-                self.map[x][y].block_sight = False
+        #go through the tiles in the room and make them passable
+        for i in room.area():
+            self.map[i[0]][i[1]].blocked = False
+            self.map[i[0]][i[1]].block_sight = False
 
     def create_h_tunnel(self, x1, x2, y):
         #horizontal tunnel. min() and max() are used in case x1>x2
