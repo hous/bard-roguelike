@@ -5,9 +5,9 @@ Tutorial: http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,
 
 TODO
 - [ ] Get a better square font that has only necessary characters
-- [ ] Clean up the map garbage, externalize dungeon generation
+- [X] Clean up the map garbage, externalize dungeon generation
 - [ ] Fix console sizing
 - [ ] GUI for starting game
-- [ ] Test suite
-- [ ] FOV / Fog of war
-
+- [X] Test suite
+- [X] FOV / Fog of war
+- [ ] Add config JSON for mobs, items, etc.
