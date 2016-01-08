@@ -1,2 +1,2 @@
 #!/bin/bash
-python test/shapes_test.py
+python test/shape_test.py

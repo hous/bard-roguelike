@@ -2,7 +2,7 @@ import libtcodpy as libtcod
 import pprint
 
 # DEBUG
-DEBUG = True
+DEBUG = False
 
 # Console
 SCREEN_WIDTH = 80
@@ -30,3 +30,10 @@ DUNGEON_MAX_ROOMS = 20
 FOV_ALGORITHM = 0
 FOV_LIGHT_WALLS = True
 TORCH_RADIUS = 10
+
+# Mobs
+PLAYER_ONE = {
+  "description" : "This is you.",
+  "char"        : "@",
+  "color"       : "libtcod.white"
+}

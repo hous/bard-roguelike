@@ -21,15 +21,14 @@ def init():
     game.register_console(libtcod.console_new(C.SCREEN_WIDTH, C.SCREEN_HEIGHT))
 
     game.register_map(Map(game.console, 80, 45))
-
-    player_x, player_y = game.m.get_starting_coords()
+    player_one_coords = game.m.get_starting_coords()
 
     # Ready Player One
-    game.register_sprite(Sprite(game.console, player_x, player_y, '@', libtcod.white), True)
+    game.register_sprite(Sprite(game.console, player_one_coords, '@', libtcod.white), True)
     game.m.register_protagonist(game.player_one)
 
     # Test Mob
-    game.register_sprite(Sprite(game.console, player_x + 3, player_y, 'g', libtcod.white))
+    game.register_sprite(Sprite(game.console, player_one_coords + [1, 0], 'g', libtcod.white))
 
     while not libtcod.console_is_window_closed():
         game.m.draw()
@@ -87,7 +86,7 @@ def handle_keys():
         game.fov_recompute = True
 
 def try_move(sprite, direction):
-    if game.m.is_blocked(game.player_one.x + direction[0], game.player_one.y + direction[1]):
+    if game.m.is_blocked(game.player_one.coords[0] + direction[0], game.player_one.coords[1] + direction[1]):
         sprite.collide((direction[0], direction[1]))
     else:
         sprite.move(direction[0], direction[1])

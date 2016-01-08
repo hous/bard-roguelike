@@ -1,6 +1,6 @@
 import libtcodpy as libtcod
 import constants as C
-from shapes import Rect, Circle
+from shape import Rect, Circle
 from sprite import Sprite
 import game
 
@@ -108,7 +108,7 @@ class Map(object):
             #recompute FOV if needed (the player moved or something)
             game.fov_recompute = False
             # yuck, shouldn't need to reference
-            libtcod.map_compute_fov(self.fov_map, self.protagonist.x, self.protagonist.y, C.TORCH_RADIUS, C.FOV_LIGHT_WALLS, C.FOV_ALGORITHM)
+            libtcod.map_compute_fov(self.fov_map, self.protagonist.coords[0], self.protagonist.coords[1], C.TORCH_RADIUS, C.FOV_LIGHT_WALLS, C.FOV_ALGORITHM)
 
         #go through all tiles, and set their background color according to the FOV
         for y in range(self.height):
@@ -143,7 +143,7 @@ class Map(object):
 
         #now check for any blocking objects
         for sprite in game.sprites:
-            if sprite.blocks and sprite.x == x and sprite.y == y:
+            if sprite.blocks and sprite.coords[0] == x and sprite.coords[1] == y:
                 return True
 
         return False
