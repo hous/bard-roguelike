@@ -53,5 +53,4 @@ class Circle(Shape):
         return area
 
     def intersect_self_type(self, other):
-        print "Circle intersect called"
         return bool(set(self.area()) & set(other.area()))

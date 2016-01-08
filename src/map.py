@@ -26,7 +26,6 @@ class Map(object):
         self.map = [[ Tile(True)
             for y in range(self.height) ]
                 for x in range(self.width) ]
-        print self.map
         self.generate_map()
         self.generate_fov_map()
 
@@ -42,7 +41,7 @@ class Map(object):
         for count in range(C.DUNGEON_MAX_ROOMS):
             # 1/5 of rooms as circles
             if libtcod.random_get_int(0, 0, 5) == 4:
-                r = libtcod.random_get_int(0, C.DUNGEON_ROOM_MIN_SIZE / 2, C.DUNGEON_ROOM_MAX_SIZE / 2)
+                r = libtcod.random_get_int(0, C.DUNGEON_ROOM_MIN_SIZE, C.DUNGEON_ROOM_MAX_SIZE / 2)
                 x = libtcod.random_get_int(0, r, self.width - r - 2)
                 y = libtcod.random_get_int(0, r, self.height - r - 2)
                 new_room = Circle(x, y, r)
@@ -76,7 +75,6 @@ class Map(object):
                     #this is the first room, where the player starts at
                     self.starting_coords['x'] = new_x
                     self.starting_coords['y'] = new_y
-                    print new_room.area()
                 else:
                     #all rooms after the first:
                     #connect it to the previous room with a tunnel
