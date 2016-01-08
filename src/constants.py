@@ -1,4 +1,5 @@
 import libtcodpy as libtcod
+import pprint
 
 # DEBUG
 DEBUG = True

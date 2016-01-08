@@ -9,7 +9,6 @@ class Shape(object):
         return bool(set(self.area()) & set(other.area()))
 
 class Rect(Shape):
-    #a rectangle on the map. used to characterize a room.
     def __init__(self, x, y, w, h):
         self.x1 = x
         self.y1 = y
@@ -43,7 +42,7 @@ class Circle(Shape):
     def center(self):
         return self.x, self.y
 
-    # TODO
+# Return a list of x,y coords that represents this shape
     def area(self):
         area = []
         for y in range(self.y - self.r, self.y + self.r):

@@ -67,9 +67,10 @@ class Map(object):
                 #center coordinates of new room, will be useful later
                 (new_x, new_y) = new_room.center()
 
+                # Display Room names for debugging
                 if C.DEBUG:
-                    room_no = Sprite(game.console, new_x, new_y, chr(65+num_rooms), libtcod.white)
-                    game.sprites.insert(0, room_no) #draw early, so monsters are drawn on top
+                    room_no = Sprite(game.console, new_x, new_y, chr(65+num_rooms), libtcod.white, False)
+                    game.sprites.insert(0, room_no) #draw early, so nothing is drawn on top
 
                 if num_rooms == 0:
                     #this is the first room, where the player starts at
@@ -134,6 +135,18 @@ class Map(object):
 
                     #since it's visible, explore it
                     self.map[x][y].explored = True
+
+    def is_blocked(self, x, y):
+        #first test the map tiles
+        if self.map[x][y].blocked:
+            return True
+
+        #now check for any blocking objects
+        for sprite in game.sprites:
+            if sprite.blocks and sprite.x == x and sprite.y == y:
+                return True
+
+        return False
 
     def get_starting_coords(self):
         return [ self.starting_coords['x'], self.starting_coords['y'] ]

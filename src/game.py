@@ -1,6 +1,7 @@
 fov_recompute = False
 sprites = []
 console = None
+m = None
 
 def register_console(con):
     global console
@@ -13,3 +14,7 @@ def register_sprite(sprite, player=False):
     if player:
         player_one = sprite
     sprites.append(sprite)
+
+def register_map(new_map):
+    global m
+    m = new_map

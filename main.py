@@ -20,19 +20,19 @@ def init():
     libtcod.console_init_root(C.SCREEN_WIDTH, C.SCREEN_HEIGHT, 'python/libtcod tutorial', False)
     game.register_console(libtcod.console_new(C.SCREEN_WIDTH, C.SCREEN_HEIGHT))
 
-    m = Map(game.console, 80, 45)
+    game.register_map(Map(game.console, 80, 45))
 
-    player_x, player_y = m.get_starting_coords()
+    player_x, player_y = game.m.get_starting_coords()
 
     # Ready Player One
     game.register_sprite(Sprite(game.console, player_x, player_y, '@', libtcod.white), True)
-    m.register_protagonist(game.player_one)
+    game.m.register_protagonist(game.player_one)
 
     # Test Mob
     game.register_sprite(Sprite(game.console, player_x + 3, player_y, 'g', libtcod.white))
 
     while not libtcod.console_is_window_closed():
-        m.draw()
+        game.m.draw()
 
         #draw all objects in the list
         for sprite in game.sprites:
@@ -71,19 +71,25 @@ def handle_keys():
 
     #movement keys
     if libtcod.console_is_key_pressed(libtcod.KEY_UP):
-        game.player_one.move(0, -1)
+        try_move(game.player_one, (0, -1))
         game.fov_recompute = True
 
     elif libtcod.console_is_key_pressed(libtcod.KEY_DOWN):
-        game.player_one.move(0, 1)
+        try_move(game.player_one, (0, 1))
         game.fov_recompute = True
 
     elif libtcod.console_is_key_pressed(libtcod.KEY_LEFT):
-        game.player_one.move(-1, 0)
+        try_move(game.player_one, (-1, 0))
         game.fov_recompute = True
 
     elif libtcod.console_is_key_pressed(libtcod.KEY_RIGHT):
-        game.player_one.move(1, 0)
+        try_move(game.player_one, (1, 0))
         game.fov_recompute = True
+
+def try_move(sprite, direction):
+    if game.m.is_blocked(game.player_one.x + direction[0], game.player_one.y + direction[1]):
+        sprite.collide((direction[0], direction[1]))
+    else:
+        sprite.move(direction[0], direction[1])
 
 init()
