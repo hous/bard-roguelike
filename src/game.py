@@ -3,9 +3,11 @@ sprites = []
 console = None
 m = None
 
+
 def register_console(con):
     global console
     console = console
+
 
 def register_sprite(sprite, player=False):
     global player_one, sprites
@@ -14,6 +16,7 @@ def register_sprite(sprite, player=False):
     if player:
         player_one = sprite
     sprites.append(sprite)
+
 
 def register_map(new_map):
     global m
