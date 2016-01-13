@@ -27,13 +27,13 @@ DUNGEON_ROOM_MIN_SIZE = 5
 DUNGEON_MAX_ROOMS = 20
 
 # Field of View
-FOV_ALGORITHM = 0
+FOV_ALGORITHM = libtcod.FOV_SHADOW
 FOV_LIGHT_WALLS = True
-TORCH_RADIUS = 10
+TORCH_RADIUS = 4
 
 # Mobs
 PLAYER_ONE = {
   "description" : "This is you.",
   "char"        : "@",
-  "color"       : "libtcod.white"
+  "color"       : libtcod.white
 }

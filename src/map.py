@@ -6,7 +6,7 @@ import game
 
 
 class Tile:
-    # A tile of the map and its properties
+    # An individual tile of the map and its properties
     def __init__(self, blocked, block_sight = None):
         self.blocked = blocked
 
@@ -24,11 +24,12 @@ class Map(object):
         self.width = width
         self.height = height
         self.config = config
+        self.rooms = []
         self.protagonist = None
-        self.starting_coords = { 'x' : 0, 'y' : 0 }
-        self.map = [[ Tile(True)
-            for y in range(self.height) ]
-                for x in range(self.width) ]
+        self.starting_coords = {'x': 0, 'y': 0}
+        self.map = [[Tile(True)
+                    for y in range(self.height)]
+                    for x in range(self.width)]
         self.generate_map()
         self.fov_map = None
         self.generate_fov_map()
@@ -38,11 +39,8 @@ class Map(object):
         self.protagonist = sprite
 
     def generate_map(self):
-        # Should be able to take randomization parameters about different room frequency, sizes, shapes, etc.
-        rooms = []
-        num_rooms = 0
-
         for count in range(C.DUNGEON_MAX_ROOMS):
+            num_rooms = len(self.rooms)
             # 1/5 of rooms as circles
             if libtcod.random_get_int(0, 0, 5) == 4:
                 r = libtcod.random_get_int(0, C.DUNGEON_ROOM_MIN_SIZE, C.DUNGEON_ROOM_MAX_SIZE / 2)
@@ -58,7 +56,7 @@ class Map(object):
 
             # run through the other rooms and see if they intersect with this one
             failed = False
-            for other_room in rooms:
+            for other_room in self.rooms:
                 if new_room.intersect(other_room):
                     failed = True
                     break
@@ -73,8 +71,8 @@ class Map(object):
 
                 # Display Room names for debugging
                 if C.DEBUG:
-                    room_no = Sprite(game.console, new_x, new_y, chr(65+num_rooms), libtcod.white, False)
-                    game.sprites.insert(0, room_no) #draw early, so nothing is drawn on top
+                    room_no = Sprite(game.console, (new_x, new_y), chr(65+num_rooms), libtcod.white, False)
+                    game.sprites.insert(0, room_no)
 
                 if num_rooms == 0:
                     # this is the first room, where the player starts at
@@ -85,7 +83,7 @@ class Map(object):
                     # connect it to the previous room with a tunnel
 
                     # center coordinates of previous room
-                    (prev_x, prev_y) = rooms[num_rooms-1].center()
+                    (prev_x, prev_y) = self.rooms[num_rooms-1].center()
 
                     # draw a coin (random number that is either 0 or 1)
                     if libtcod.random_get_int(0, 0, 1) == 1:
@@ -98,7 +96,7 @@ class Map(object):
                         self.create_h_tunnel(prev_x, new_x, new_y)
 
                 # finally, append the new room to the list
-                rooms.append(new_room)
+                self.rooms.append(new_room)
                 num_rooms += 1
 
     def generate_fov_map(self):
@@ -153,7 +151,7 @@ class Map(object):
         return False
 
     def get_starting_coords(self):
-        return [ self.starting_coords['x'], self.starting_coords['y'] ]
+        return [self.starting_coords['x'], self.starting_coords['y']]
 
     def create_room(self, room):
         # go through the tiles in the room and make them passable
@@ -173,12 +171,6 @@ class Map(object):
             self.map[x][y].blocked = False
             self.map[x][y].block_sight = False
 
-    def create_test_map(self):
-        # create two rooms
-        room1 = Rect(20, 15, 10, 15)
-        room2 = Rect(50, 15, 10, 15)
-        self.create_room(room1)
-        self.create_room(room2)
+    def populate_rooms(self):
+        pass
 
-        # connect them with a tunnel
-        self.create_h_tunnel(25, 55, 23)
