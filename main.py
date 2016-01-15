@@ -7,7 +7,7 @@ sys.path.append(os.path.abspath("./src"))
 import libtcodpy as libtcod
 import constants as C
 import game
-from sprite import Sprite
+from sprite import Sprite, Mob
 from map import Map
 
 #############################################
@@ -16,7 +16,7 @@ from map import Map
 
 def init():
     # libtcod.console_set_custom_font('assets/fonts/font.png', libtcod.FONT_LAYOUT_ASCII_INROW | libtcod.FONT_TYPE_GREYSCALE, 32, 2048)
-    libtcod.console_set_custom_font('assets/fonts/arial10x10.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
+    libtcod.console_set_custom_font('assets/fonts/dejavu16x16_gs_tc.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
     libtcod.console_init_root(C.SCREEN_WIDTH, C.SCREEN_HEIGHT, 'python/libtcod tutorial', False)
     game.register_console(libtcod.console_new(C.SCREEN_WIDTH, C.SCREEN_HEIGHT))
 
@@ -24,11 +24,12 @@ def init():
     player_one_coords = game.m.get_starting_coords()
 
     # Ready Player One
-    game.register_sprite(Sprite(game.console, player_one_coords, '@', libtcod.white), True)
+    game.register_sprite(Mob(game.console, C.PLAYER_ONE, player_one_coords), True)
     game.m.register_protagonist(game.player_one)
 
-    # Test Mob
-    game.register_sprite(Sprite(game.console, player_one_coords + [1, 0], 'g', libtcod.white))
+    # Test Mobs
+    game.register_sprite(Mob(game.console, C.MOBS["goblin"], (player_one_coords[0] + 1, player_one_coords[1])))
+    game.register_sprite(Mob(game.console, C.MOBS["feral_cat"], (player_one_coords[0] - 1, player_one_coords[1])))
 
     while not libtcod.console_is_window_closed():
         game.m.draw()
@@ -94,4 +95,5 @@ def try_move(sprite, direction):
     else:
         sprite.move(direction[0], direction[1])
 
+# Get after it
 init()

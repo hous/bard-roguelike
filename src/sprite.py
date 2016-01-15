@@ -1,14 +1,16 @@
 import libtcodpy as libtcod
 
 
-class Sprite:
+class Sprite(object):
     # this is a generic game object: the player, a monster, an item, the stairs...
     # it's always represented by a character on screen.
-    def __init__(self, console, coords, char, color, blocks=True):
+    def __init__(self, console, config, coords, blocks):
+        print config
         self.console = console
+        self.char = config["char"]
+        self.color = config["color"]
+        self.description = config["description"]
         self.coords = coords
-        self.char = char
-        self.color = color
         self.blocks = blocks
 
     def move(self, dx, dy):
@@ -30,6 +32,5 @@ class Sprite:
 
 
 class Mob(Sprite):
-    def __init__(self, console, coords, char, color, config):
-        super(Mob, self).__init__(self, console, coords, char, color, True)
-        self.config = config
+    def __init__(self, console, config, coords):
+        super(Mob, self).__init__(console, config, coords, True)

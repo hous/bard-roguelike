@@ -8,6 +8,8 @@ TODO
 - [X] Clean up the map garbage, externalize dungeon generation
 - [ ] Fix console sizing
 - [ ] GUI for starting game
+- [ ] Level config / map difficulty
 - [X] Test suite
 - [X] FOV / Fog of war
 - [ ] Add config JSON for mobs, items, etc.
+- [ ] Fix the weird delay with arrow keys

@@ -5,7 +5,7 @@ from sprite import Sprite
 import game
 
 
-class Tile:
+class Tile(object):
     # An individual tile of the map and its properties
     def __init__(self, blocked, block_sight = None):
         self.blocked = blocked
@@ -71,7 +71,12 @@ class Map(object):
 
                 # Display Room names for debugging
                 if C.DEBUG:
-                    room_no = Sprite(game.console, (new_x, new_y), chr(65+num_rooms), libtcod.white, False)
+                    debug_sprite_config = dict(
+                        char=chr(65+num_rooms),
+                        color=libtcod.white,
+                        description="A debugging character."
+                    )
+                    room_no = Sprite(game.console, debug_sprite_config, (new_x, new_y), False)
                     game.sprites.insert(0, room_no)
 
                 if num_rooms == 0:
@@ -138,7 +143,8 @@ class Map(object):
                     # since it's visible, explore it
                     self.map[x][y].explored = True
 
-    def is_blocked(self, x, y):
+    def is_blocked_deprecated(self, x, y):
+        print self.is_blocked_functional(x, y)
         # first test the map tiles
         if self.map[x][y].blocked:
             return True
@@ -146,9 +152,14 @@ class Map(object):
         # now check for any blocking objects
         for sprite in game.sprites:
             if sprite.blocks and sprite.coords[0] == x and sprite.coords[1] == y:
+                print sprite.coords
                 return True
 
         return False
+
+    def is_blocked(self, x, y):
+        # Trying out some functional programming. Would need to pass in sprites and map in order to really be functional though
+        return self.map[x][y].blocked or any(map(lambda sprite: sprite.coords == (x, y), game.sprites))
 
     def get_starting_coords(self):
         return [self.starting_coords['x'], self.starting_coords['y']]

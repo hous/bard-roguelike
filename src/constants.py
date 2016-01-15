@@ -32,8 +32,24 @@ FOV_LIGHT_WALLS = True
 TORCH_RADIUS = 4
 
 # Mobs
-PLAYER_ONE = {
-  "description" : "This is you.",
-  "char"        : "@",
-  "color"       : libtcod.white
-}
+PLAYER_ONE = dict(
+    char="@",
+    color=libtcod.white,
+    description="This is you."
+)
+
+MOBS = dict(
+    goblin=dict(
+        char="g",
+        color=libtcod.darker_green,
+        name="goblin",
+        description="A stinking, wretched little goblin."
+    ),
+    feral_cat=dict(
+        char="c",
+        color=libtcod.grey,
+        name="feral cat",
+        description="This cat looks skittish and hungry."
+    )
+)
+
