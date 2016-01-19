@@ -13,3 +13,7 @@ TODO
 - [X] FOV / Fog of war
 - [ ] Add config JSON for mobs, items, etc.
 - [ ] Fix the weird delay with arrow keys
+- [ ] PyPI registration for dependency installation
+- [X] Include pyo
+- [ ] donate to pyo if used
+- [ ] Make sounds non-blocking, look into pyo more

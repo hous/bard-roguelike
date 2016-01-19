@@ -9,17 +9,21 @@ import constants as C
 import game
 from sprite import Sprite, Mob
 from map import Map
+from audio import Audio
+
 
 #############################################
 # libtcod Initialization & Main Loop
 #############################################
 
 def init():
+
     # libtcod.console_set_custom_font('assets/fonts/font.png', libtcod.FONT_LAYOUT_ASCII_INROW | libtcod.FONT_TYPE_GREYSCALE, 32, 2048)
     libtcod.console_set_custom_font('assets/fonts/dejavu16x16_gs_tc.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
     libtcod.console_init_root(C.SCREEN_WIDTH, C.SCREEN_HEIGHT, 'python/libtcod tutorial', False)
     game.register_console(libtcod.console_new(C.SCREEN_WIDTH, C.SCREEN_HEIGHT))
 
+    game.register_audio(Audio())
     game.register_map(Map(game.console, 80, 45))
     player_one_coords = game.m.get_starting_coords()
 
@@ -50,6 +54,8 @@ def init():
         # handle keys and exit game if needed
         exit = handle_keys()
         if exit:
+            # kill sound and exit
+            game.audio.kill()
             break
 
 
@@ -91,6 +97,7 @@ def handle_keys():
 
 def try_move(sprite, direction):
     if game.m.is_blocked(game.player_one.coords[0] + direction[0], game.player_one.coords[1] + direction[1]):
+        game.audio.play_sound()
         sprite.collide((direction[0], direction[1]))
     else:
         sprite.move(direction[0], direction[1])
