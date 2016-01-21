@@ -16,4 +16,5 @@ TODO
 - [ ] PyPI registration for dependency installation
 - [X] Include pyo
 - [ ] donate to pyo if used
-- [ ] Make sounds non-blocking, look into pyo more
+- [X] Make sounds non-blocking, look into pyo more
+- [ ] Synchronize audio threads - bg/fg
