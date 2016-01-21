@@ -29,7 +29,6 @@ class Audio(object):
         self.background_thread = threading.Thread(target=sound)
         self.background_thread.start()
 
-
     def kill(self):
         self.server.stop()
         time.sleep(1)
