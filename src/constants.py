@@ -35,7 +35,9 @@ TORCH_RADIUS = 4
 PLAYER_ONE = dict(
     char="@",
     color=libtcod.white,
-    description="This is you."
+    name="you",
+    description="This is you.",
+    health="4d6"
 )
 
 MOBS = dict(
@@ -43,13 +45,15 @@ MOBS = dict(
         char="g",
         color=libtcod.darker_green,
         name="goblin",
-        description="A stinking, wretched little goblin."
+        description="A stinking, wretched little goblin.",
+        health="2d6"
     ),
     feral_cat=dict(
         char="c",
         color=libtcod.grey,
         name="feral cat",
-        description="This cat looks skittish and hungry."
+        description="This cat looks skittish and hungry.",
+        health="4"
     )
 )
 

@@ -6,9 +6,11 @@ levels = []
 current_level = 0
 audio = None
 
+
 def register_console(con):
     global console
     console = console
+
 
 def register_audio(aud):
     global audio

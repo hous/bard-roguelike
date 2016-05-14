@@ -18,3 +18,4 @@ TODO
 - [ ] donate to pyo if used
 - [X] Make sounds non-blocking, look into pyo more
 - [ ] Synchronize audio threads - bg/fg
+- [ ] Stop foreground thread when 

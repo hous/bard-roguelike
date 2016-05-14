@@ -1,5 +1,5 @@
 import libtcodpy as libtcod
-
+import dice
 
 class Sprite(object):
     # this is a generic game object: the player, a monster, an item, the stairs...
@@ -34,3 +34,5 @@ class Sprite(object):
 class Mob(Sprite):
     def __init__(self, console, config, coords):
         super(Mob, self).__init__(console, config, coords, True)
+        self.health = dice.roll(config["health"])
+        print self.health
