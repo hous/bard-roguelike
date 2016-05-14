@@ -1,7 +1,8 @@
-OSX libtcod setup: https://github.com/podiki/libtcod-mac
+An experimental roguelike using PYO audio library & libtcod python. 
 
-@step5 in the tutorial
-Tutorial: http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod,_part_5
+- OSX libtcod setup: https://github.com/podiki/libtcod-mac
+
+@see http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod,_part_5
 
 TODO
 - [ ] Get a better square font that has only necessary characters
