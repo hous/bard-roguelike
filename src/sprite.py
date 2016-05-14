@@ -41,6 +41,7 @@ class Mob(Sprite):
     def take_action(self):
         print self.name, "taking action"
 
+
 class Player(Sprite):
     def __init__(self, console, config, coords):
         super(Player, self).__init__(console, config, coords, True)
