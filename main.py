@@ -7,7 +7,7 @@ sys.path.append(os.path.abspath("./src"))
 import libtcodpy as libtcod
 import constants as C
 import game
-from sprite import Sprite, Mob
+from sprite import Mob, Player
 from map import Map
 from audio import Audio
 
@@ -28,12 +28,14 @@ def init():
     player_one_coords = game.m.get_starting_coords()
 
     # Ready Player One
-    game.register_sprite(Mob(game.console, C.PLAYER_ONE, player_one_coords), True)
+    game.register_sprite(Player(game.console, C.PLAYER_ONE, player_one_coords), True)
     game.m.register_protagonist(game.player_one)
 
     # Test Mobs
-    game.register_sprite(Mob(game.console, C.MOBS["goblin"], (player_one_coords[0] + 1, player_one_coords[1])))
-    game.register_sprite(Mob(game.console, C.MOBS["feral_cat"], (player_one_coords[0] - 1, player_one_coords[1])))
+    game.register_sprite(Mob(game.console, C.MOBS["goblin"], (player_one_coords[0] + 1, player_one_coords[1])), mob=True)
+    game.register_sprite(Mob(game.console, C.MOBS["feral_cat"], (player_one_coords[0] - 1, player_one_coords[1])), mob=True)
+
+    game.m.populate_rooms()
 
     while not libtcod.console_is_window_closed():
         game.m.draw()
@@ -52,12 +54,14 @@ def init():
             sprite.clear()
 
         # handle keys and exit game if needed
-        exit = handle_keys()
-        if exit:
+        player_action = handle_keys()
+        if player_action == 'exit':
             # kill sound and exit
             game.audio.kill()
             break
 
+        if player_action != 'no-action':
+            game.update_mobs()
 
 #############################################
 # Input
@@ -75,7 +79,7 @@ def handle_keys():
 
     # Escape to exit game
     elif key.vk == libtcod.KEY_ESCAPE:
-        return True
+        return 'exit'
 
     # movement keys
     if libtcod.console_is_key_pressed(libtcod.KEY_UP):
@@ -94,6 +98,8 @@ def handle_keys():
         try_move(game.player_one, (1, 0))
         game.fov_recompute = True
 
+    else:
+        return 'no-action'
 
 def try_move(sprite, direction):
     if game.m.is_blocked(game.player_one.coords[0] + direction[0], game.player_one.coords[1] + direction[1]):

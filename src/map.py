@@ -1,7 +1,8 @@
 import libtcodpy as libtcod
 import constants as C
+import dice
 from shape import Rect, Circle
-from sprite import Sprite
+from sprite import Sprite, Mob
 import game
 
 
@@ -182,6 +183,16 @@ class Map(object):
             self.map[x][y].blocked = False
             self.map[x][y].block_sight = False
 
+    # This doesn't belong here.
     def populate_rooms(self):
-        pass
+        for room in self.rooms:
+            mob_count = libtcod.random_get_int(0, 0, C.DUNGEON_MAX_MOBS_PER_ROOM)
+            for i in range(mob_count):
+                room_area = room.area()
+                coordinate = room_area[libtcod.random_get_int(0, 0, len(room_area) - 1)]
+                x, y = coordinate[0], coordinate[1]
+                if not self.is_blocked(x, y):
+                    game.register_sprite(Mob(game.console, C.MOBS["goblin"], (x, y)), mob=True)
 
+    def get_distance(self, coordinate_one, coordinate_two):
+        pass

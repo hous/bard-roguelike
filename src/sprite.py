@@ -34,5 +34,14 @@ class Sprite(object):
 class Mob(Sprite):
     def __init__(self, console, config, coords):
         super(Mob, self).__init__(console, config, coords, True)
+        self.name = config["name"]
         self.health = dice.roll(config["health"])
-        print self.health
+        self.detection_range = config["detection_range"]
+
+    def take_action(self):
+        print self.name, "taking action"
+
+class Player(Sprite):
+    def __init__(self, console, config, coords):
+        super(Player, self).__init__(console, config, coords, True)
+        self.health = dice.roll(config["health"])

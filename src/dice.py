@@ -1,6 +1,4 @@
 import libtcodpy as libtcod
-import pprint
-from random import randint
 
 def roll(dice):
     # Collapse an un-rolled dice descriptor into its value, e.g. "2d6" = 7
@@ -26,4 +24,9 @@ def roll(dice):
     else:
         return int(dice)
 
-    return reduce(lambda x, y: x + randint(1,die_type) + adder, range(1, die_count + 1))
+    value = reduce(lambda x, y: x + libtcod.random_get_int(0, 1, die_type) + adder, range(1, die_count + 1))
+    print value
+    return value
+
+def flip_coin():
+    return libtcod.random_get_int(0, 0, 1)

@@ -26,6 +26,9 @@ DUNGEON_ROOM_MAX_SIZE = 16
 DUNGEON_ROOM_MIN_SIZE = 5
 DUNGEON_MAX_ROOMS = 20
 
+# Default Population Limits
+DUNGEON_MAX_MOBS_PER_ROOM = 2
+
 # Field of View
 FOV_ALGORITHM = libtcod.FOV_SHADOW
 FOV_LIGHT_WALLS = True
@@ -46,14 +49,16 @@ MOBS = dict(
         color=libtcod.darker_green,
         name="goblin",
         description="A stinking, wretched little goblin.",
-        health="2d6"
+        health="2d6",
+        detection_range=3
     ),
     feral_cat=dict(
         char="c",
         color=libtcod.grey,
         name="feral cat",
         description="This cat looks skittish and hungry.",
-        health="4"
+        health="4",
+        detection_range=9
     )
 )
 
