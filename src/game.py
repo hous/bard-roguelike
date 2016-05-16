@@ -1,6 +1,7 @@
+protagonist = None
 fov_recompute = False
 sprites = []
-mobs = []
+ais = []
 console = None
 m = None
 levels = []
@@ -10,7 +11,7 @@ audio = None
 
 def register_console(con):
     global console
-    console = console
+    console = con
 
 
 def register_audio(aud):
@@ -18,14 +19,16 @@ def register_audio(aud):
     audio = aud
 
 
-def register_sprite(sprite, player=False, mob=False):
-    global player_one, sprites
+def register_sprite(sprite, player=False):
+    global protagonist, sprites
     for s in sprites:
         if s is sprite: return
     if player:
-        player_one = sprite
-    if mob:
-        mobs.append(sprite)
+        protagonist = sprite
+    if sprite.ai:
+        print "Found AI:", sprite.ai
+        ais.append(sprite.ai)
+
     sprites.append(sprite)
 
 
@@ -39,7 +42,8 @@ def update_level(new_level):
     current_level = new_level
 
 
-def update_mobs():
-    global mobs
-    for mob in mobs:
-        mob.take_action()
+def update_ais():
+    global ais
+    for ai in ais:
+        # Give each AI a reference to the Map and Protagonist??
+        ai.take_action(m, protagonist)

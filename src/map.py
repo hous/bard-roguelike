@@ -2,9 +2,9 @@ import libtcodpy as libtcod
 import constants as C
 import dice
 from shape import Rect, Circle
-from sprite import Sprite, Mob
+from sprite import Sprite, Mob, AI
 import game
-
+import math
 
 class Tile(object):
     # An individual tile of the map and its properties
@@ -144,22 +144,7 @@ class Map(object):
                     # since it's visible, explore it
                     self.map[x][y].explored = True
 
-    def is_blocked_deprecated(self, x, y):
-        print self.is_blocked_functional(x, y)
-        # first test the map tiles
-        if self.map[x][y].blocked:
-            return True
-
-        # now check for any blocking objects
-        for sprite in game.sprites:
-            if sprite.blocks and sprite.coords[0] == x and sprite.coords[1] == y:
-                print sprite.coords
-                return True
-
-        return False
-
     def is_blocked(self, x, y):
-        # Trying out some functional programming. Would need to pass in sprites and map in order to really be functional though
         return self.map[x][y].blocked or any(map(lambda sprite: sprite.coords == (x, y), game.sprites))
 
     def get_starting_coords(self):
@@ -192,7 +177,8 @@ class Map(object):
                 coordinate = room_area[libtcod.random_get_int(0, 0, len(room_area) - 1)]
                 x, y = coordinate[0], coordinate[1]
                 if not self.is_blocked(x, y):
-                    game.register_sprite(Mob(game.console, C.MOBS["goblin"], (x, y)), mob=True)
+                    game.register_sprite(Sprite(console=game.console, config=C.MOBS["goblin"], coords=[x, y], mob=Mob(C.MOBS["goblin"]), ai=AI(C.MOBS["goblin"])))
 
     def get_distance(self, coordinate_one, coordinate_two):
-        pass
+        dx, dy = coordinate_two[0] - coordinate_one[0], coordinate_two[1] - coordinate_one[1]
+        return math.sqrt((dx ** 2) + (dy ** 2))

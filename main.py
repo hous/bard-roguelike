@@ -28,12 +28,8 @@ def init():
     player_one_coords = game.m.get_starting_coords()
 
     # Ready Player One
-    game.register_sprite(Player(game.console, C.PLAYER_ONE, player_one_coords), True)
-    game.m.register_protagonist(game.player_one)
-
-    # Test Mobs
-    game.register_sprite(Mob(game.console, C.MOBS["goblin"], (player_one_coords[0] + 1, player_one_coords[1])), mob=True)
-    game.register_sprite(Mob(game.console, C.MOBS["feral_cat"], (player_one_coords[0] - 1, player_one_coords[1])), mob=True)
+    game.register_sprite(Player(console=game.console, config=C.PLAYER_ONE, coords=player_one_coords), player=True)
+    game.m.register_protagonist(game.protagonist)
 
     game.m.populate_rooms()
 
@@ -61,7 +57,7 @@ def init():
             break
 
         if player_action != 'no-action':
-            game.update_mobs()
+            game.update_ais()
 
 #############################################
 # Input
@@ -83,26 +79,26 @@ def handle_keys():
 
     # movement keys
     if libtcod.console_is_key_pressed(libtcod.KEY_UP):
-        try_move(game.player_one, (0, -1))
+        try_move(game.protagonist, (0, -1))
         game.fov_recompute = True
 
     elif libtcod.console_is_key_pressed(libtcod.KEY_DOWN):
-        try_move(game.player_one, (0, 1))
+        try_move(game.protagonist, (0, 1))
         game.fov_recompute = True
 
     elif libtcod.console_is_key_pressed(libtcod.KEY_LEFT):
-        try_move(game.player_one, (-1, 0))
+        try_move(game.protagonist, (-1, 0))
         game.fov_recompute = True
 
     elif libtcod.console_is_key_pressed(libtcod.KEY_RIGHT):
-        try_move(game.player_one, (1, 0))
+        try_move(game.protagonist, (1, 0))
         game.fov_recompute = True
 
     else:
         return 'no-action'
 
 def try_move(sprite, direction):
-    if game.m.is_blocked(game.player_one.coords[0] + direction[0], game.player_one.coords[1] + direction[1]):
+    if game.m.is_blocked(game.protagonist.coords[0] + direction[0], game.protagonist.coords[1] + direction[1]):
         game.audio.play_sound()
         sprite.collide((direction[0], direction[1]))
     else:
