@@ -145,7 +145,7 @@ class Map(object):
                     self.map[x][y].explored = True
 
     def is_blocked(self, x, y):
-        return self.map[x][y].blocked or any(map(lambda sprite: sprite.coords == (x, y), game.sprites))
+        return self.map[x][y].blocked or any(map(lambda sprite: sprite.coords == [x, y], game.sprites))
 
     def get_starting_coords(self):
         return [self.starting_coords['x'], self.starting_coords['y']]

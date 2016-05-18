@@ -52,6 +52,8 @@ class Mob():
         self.max_hp = dice.roll(config["health"])
         self.current_hp = self.max_hp
 
+    def attack(self, target):
+        pass
 
 class AI():
     def __init__(self, config):
@@ -71,8 +73,9 @@ class AI():
     def get_direction(self, target_coords):
         dx = target_coords[0] - self.owner.coords[0]
         dy = target_coords[1] - self.owner.coords[1]
+        print "dx, dy", dx, dy
         distance = math.sqrt(dx ** 2 + dy ** 2)
-
+        print "distance", distance
         #normalize it to length 1 (preserving direction), then round it and
         #convert to integer so the movement is restricted to the map grid
         dx = int(round(dx / distance))
