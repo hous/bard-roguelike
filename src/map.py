@@ -27,7 +27,7 @@ class Map(object):
         self.config = config
         self.rooms = []
         self.protagonist = None
-        self.starting_coords = {'x': 0, 'y': 0}
+        self.starting_position = [0, 0]
         self.map = [[Tile(True)
                     for y in range(self.height)]
                     for x in range(self.width)]
@@ -82,8 +82,8 @@ class Map(object):
 
                 if num_rooms == 0:
                     # this is the first room, where the player starts at
-                    self.starting_coords['x'] = new_x
-                    self.starting_coords['y'] = new_y
+                    self.starting_position[0] = new_x
+                    self.starting_position[1] = new_y
                 else:
                     # all rooms after the first:
                     # connect it to the previous room with a tunnel
@@ -116,7 +116,7 @@ class Map(object):
             # recompute FOV if needed (the player moved or something)
             game.fov_recompute = False
             # yuck, shouldn't need to reference
-            libtcod.map_compute_fov(self.fov_map, self.protagonist.coords[0], self.protagonist.coords[1], C.TORCH_RADIUS, C.FOV_LIGHT_WALLS, C.FOV_ALGORITHM)
+            libtcod.map_compute_fov(self.fov_map, self.protagonist.position[0], self.protagonist.position[1], C.TORCH_RADIUS, C.FOV_LIGHT_WALLS, C.FOV_ALGORITHM)
 
         # go through all tiles, and set their background color according to the FOV
         for y in range(self.height):
@@ -145,10 +145,10 @@ class Map(object):
                     self.map[x][y].explored = True
 
     def is_blocked(self, x, y):
-        return self.map[x][y].blocked or any(map(lambda sprite: sprite.coords == [x, y], game.sprites))
+        return self.map[x][y].blocked or game.get_sprite_at_position(x, y) is not None
 
-    def get_starting_coords(self):
-        return [self.starting_coords['x'], self.starting_coords['y']]
+    def get_starting_position(self):
+        return [self.starting_position[0], self.starting_position[1]]
 
     def create_room(self, room):
         # go through the tiles in the room and make them passable
@@ -177,7 +177,7 @@ class Map(object):
                 coordinate = room_area[libtcod.random_get_int(0, 0, len(room_area) - 1)]
                 x, y = coordinate[0], coordinate[1]
                 if not self.is_blocked(x, y):
-                    game.register_sprite(Sprite(console=game.console, config=C.MOBS["goblin"], coords=[x, y], mob=Mob(C.MOBS["goblin"]), ai=AI(C.MOBS["goblin"])))
+                    game.register_sprite(Sprite(console=game.console, config=C.MOBS["goblin"], position=[x, y], mob=Mob(C.MOBS["goblin"]), ai=AI(C.MOBS["goblin"])))
 
     def get_distance(self, coordinate_one, coordinate_two):
         dx, dy = coordinate_two[0] - coordinate_one[0], coordinate_two[1] - coordinate_one[1]

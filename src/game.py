@@ -47,3 +47,20 @@ def update_ais():
     for ai in ais:
         # Give each AI a reference to the Map and Protagonist??
         ai.take_action(m, protagonist)
+
+
+def get_sprite_at_position(x, y):
+    global sprites
+    for sprite in sprites:
+        if sprite.position is (x, y):
+            return sprite
+    return None
+
+
+def collide_wall(sprite, x, y):
+    print "collision with", sprite, "and a wall at", (x, y)
+
+
+def collide_sprite(collider, collidee, x, y):
+    print "collision with", collider, "and", collidee, "at", (x, y)
+

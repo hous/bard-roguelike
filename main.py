@@ -25,10 +25,10 @@ def init():
 
     game.register_audio(Audio())
     game.register_map(Map(game.console, 80, 45))
-    player_one_coords = game.m.get_starting_coords()
+    player_one_position = game.m.get_starting_position()
 
     # Ready Player One
-    game.register_sprite(Player(console=game.console, config=C.PLAYER_ONE, coords=player_one_coords), player=True)
+    game.register_sprite(Player(console=game.console, config=C.PLAYER_ONE, position=player_one_position), player=True)
     game.m.register_protagonist(game.protagonist)
 
     game.m.populate_rooms()
@@ -97,10 +97,18 @@ def handle_keys():
     else:
         return 'no-action'
 
+
 def try_move(sprite, direction):
-    if game.m.is_blocked(game.protagonist.coords[0] + direction[0], game.protagonist.coords[1] + direction[1]):
-        game.audio.play_sound()
-        sprite.collide((direction[0], direction[1]))
+    x, y = game.protagonist.position[0] + direction[0], game.protagonist.position[1] + direction[1]
+    collidee = game.get_sprite_at_position(x, y)
+
+    if game.m.is_blocked(x, y):
+#        game.audio.play_sound()
+        game.collide_wall(sprite, direction[0], direction[1])
+
+    if collidee is not None:
+        game.collide_sprite(sprite, collidee)
+
     else:
         sprite.move(direction[0], direction[1])
 
